@@ -1,0 +1,230 @@
+Sub Macro1()
+'
+' Macro1 Macro
+'
+
+'
+    ActiveSheet.ChartObjects("Graphique 1").Activate
+    ActiveChart.ChartGroups(1).RadarAxisLabels.Select
+    Selection.Delete
+End Sub
+
+Sub Macro3()
+'
+' Macro3 Macro
+'
+
+'
+    ActiveChart.FullSeriesCollection(1).DataLabels.Select
+    ActiveChart.FullSeriesCollection(1).Points(2).DataLabel.Select
+    Application.CutCopyMode = False
+    ActiveChart.FullSeriesCollection(1).Points(2).DataLabel.Select
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters.Text = ""
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        InsertAfter "Test 2"
+    With ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters(1, 6).Font
+        .BaselineOffset = 0
+        .Bold = msoFalse
+        .NameComplexScript = "+mn-cs"
+        .NameFarEast = "+mn-ea"
+        .Fill.Visible = msoTrue
+        .Fill.ForeColor.RGB = RGB(64, 64, 64)
+        .Fill.Transparency = 0
+        .Fill.Solid
+        .Size = 9
+        .Italic = msoFalse
+        .Kerning = 12
+        .Name = "+mn-lt"
+        .UnderlineStyle = msoNoUnderline
+        .Strike = msoNoStrike
+    End With
+    With ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters(1, 6).ParagraphFormat
+        .TextDirection = msoTextDirectionLeftToRight
+        .Alignment = msoAlignCenter
+    End With
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        InsertChartField msoChartFieldFormula, "=Feuil1!$A$2", 7
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters.Text = ""
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        InsertAfter "Test 2"
+    With ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters(1, 6).Font
+        .BaselineOffset = 0
+        .Bold = msoFalse
+        .NameComplexScript = "+mn-cs"
+        .NameFarEast = "+mn-ea"
+        .Fill.Visible = msoTrue
+        .Fill.ForeColor.RGB = RGB(64, 64, 64)
+        .Fill.Transparency = 0
+        .Fill.Solid
+        .Size = 9
+        .Italic = msoFalse
+        .Kerning = 12
+        .Name = "+mn-lt"
+        .UnderlineStyle = msoNoUnderline
+        .Strike = msoNoStrike
+    End With
+    With ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters(1, 6).ParagraphFormat
+        .TextDirection = msoTextDirectionLeftToRight
+        .Alignment = msoAlignCenter
+    End With
+    ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        InsertChartField msoChartFieldFormula, "=Feuil1!$A$2", 7
+    With ActiveChart.SeriesCollection(1).DataLabels(2).Format.TextFrame2.TextRange. _
+        Characters(7, 6).ParagraphFormat
+        .TextDirection = msoTextDirectionLeftToRight
+        .Alignment = msoAlignCenter
+    End With
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+' Permet de supprimer tous les noms des radar graph
+Sub ClearTextInChart()
+    Dim chartName As String
+    Dim chartObject As chartObject
+    Dim series As series
+    Dim point As point
+
+    ' Prompt the user for the chart name
+    chartName = InputBox("Enter the name of the chart to clear text:", "Clear Text in Chart")
+
+    ' Find the chart object by name
+    ActiveSheet.ChartObjects(chartName).Activate
+    ActiveChart.ChartGroups(1).RadarAxisLabels.Select
+    Selection.Delete
+    
+    
+End Sub
+' permet de créer des cellules pour chaque valeur des graphes
+Sub AddCustomDataLabelsToRadarChart()
+    Dim chartObject As chartObject
+    Dim series As series
+    Dim point As point
+    Dim labelText As String
+    Dim i As Long
+
+    ' Remplacez "NomGraphique" par le nom de votre graphique en radar
+    Set chartObject = ActiveSheet.ChartObjects("Graphique 1")
+
+    ' Parcourt chaque série dans le graphique
+    For Each series In chartObject.Chart.SeriesCollection
+        i = 1 ' Indice pour suivre le point actuel
+        ' Parcourt chaque point dans la série
+        For Each point In series.Points
+            ' Ici, vous pouvez créer une étiquette personnalisée en utilisant des données spécifiques
+            ' Par exemple, créez une étiquette avec le nom de la série et la valeur du point
+            labelText = "test"
+            ' Ajoutez l'étiquette au point
+            point.HasDataLabel = True
+            point.DataLabel.Text = labelText
+            ' Vous pouvez personnaliser la police, la taille, la couleur, etc. de l'étiquette ici
+            i = i + 1 ' Incrémente l'indice du point
+        Next point
+    Next series
+End Sub
+
+' permet de créer chaque étioquette, et de les remplir
+Sub LinkDataToLabelsInRadarChart()
+    Dim chartObject As chartObject
+    Dim series As series
+    Dim point As point
+    Dim labelText As String
+    Dim i As Long
+    Dim dataSheet As Worksheet
+
+    ' Remplacez "NomGraphique" par le nom de votre graphique en radar
+    Set chartObject = ActiveSheet.ChartObjects("Graphique 1")
+    ' Remplacez "FeuilleDonnées" par le nom de la feuille de calcul avec les données
+    Set dataSheet = Worksheets("Feuil1")
+
+    ' Parcourt chaque série dans le graphique
+    For Each series In chartObject.Chart.SeriesCollection
+        i = 1 ' Indice pour suivre le point actuel
+        ' Parcourt chaque point dans la série
+        For Each point In series.Points
+            ' Récupère les valeurs et les étiquettes de la feuille de calcul
+            labelText = dataSheet.Cells(i, 1).Value
+            ' Ajoutez l'étiquette au point
+            point.HasDataLabel = True
+            point.DataLabel.Text = labelText
+            ' Vous pouvez personnaliser la police, la taille, la couleur, etc. de l'étiquette ici
+            i = i + 1 ' Incrémente l'indice du point
+        Next point
+    Next series
+End Sub
+
+Sub LinkLabelsToCellValuesDynamically()
+    Dim chartObject As chartObject
+    Dim series As series
+    Dim point As point
+    Dim i As Long
+    Dim dataSheet As Worksheet
+    Dim labelTextRange As Range
+
+    ' Remplacez "NomGraphique" par le nom de votre graphique en radar
+    Set chartObject = ActiveSheet.ChartObjects("Graphique 1")
+    ' Remplacez "FeuilleDonnées" par le nom de la feuille de calcul avec les données
+    Set dataSheet = Worksheets("Feuil1")
+    ' Remplacez "PlageEtiquettes" par la plage de cellules contenant les étiquettes liées
+    Set labelTextRange = dataSheet.Range("A1:A6")
+
+    ' Parcourt chaque série dans le graphique
+    For Each series In chartObject.Chart.SeriesCollection
+        i = 1 ' Indice pour suivre le point actuel
+        ' Parcourt chaque point dans la série
+        For Each point In series.Points
+            ' Récupère l'étiquette à partir de la plage de cellules liées
+            point.HasDataLabel = True
+            point.DataLabel.Text = labelTextRange.Cells(i, 1).Value
+            ' Vous pouvez personnaliser la police, la taille, la couleur, etc. de l'étiquette ici
+            i = i + 1 ' Incrémente l'indice du point
+        Next point
+    Next series
+End Sub
+
